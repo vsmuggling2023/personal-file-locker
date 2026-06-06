@@ -1,92 +1,87 @@
-# 🔐 PyLocker & Clone Hero Song Protector
+# 🔐 PyLocker - Simulador de Cifrado y Descifrado de Carpetas Personales
 
-Este repositorio contiene dos herramientas de cifrado y protección desarrolladas en Python utilizando criptografía simétrica avanzada (**AES-256-GCM**). 
+Este repositorio contiene una herramienta educativa de cifrado y descifrado de carpetas de usuario desarrollada en Python utilizando criptografía simétrica avanzada (**AES-256-GCM**).
 
 ---
 
-## ⚠ ADVERTENCIA IMPORTANTE / WARNING
+## ⚠ ADVERTENCIA / WARNING
 > [!WARNING]
-> **Este proyecto incluye herramientas con capacidad de cifrar archivos del sistema de forma irreversible si se pierde la contraseña.**
-> * La herramienta de cifrado de disco (`cifrar_disco.py`) **SOLO debe ser ejecutada en entornos controlados (Máquinas Virtuales)**.
-> * El autor no se hace responsable de pérdida de datos accidental. ¡Úsalo bajo tu propio riesgo!
+> **Este proyecto tiene fines estrictamente educativos y de aprendizaje de conceptos de ciberseguridad.**
+> * Este script cifra archivos reales de forma irreversible si se pierde la contraseña.
+> * **SOLO** debe ejecutarse en entornos controlados de pruebas (como una **Máquina Virtual**).
+> * El autor no se hace responsable de pérdidas accidentales o daños en sistemas de producción. ¡Úsalo con responsabilidad!
 
 ---
 
-## 🛠 Contenido del Proyecto
+## 🛠 Funcionamiento del Proyecto
 
-El proyecto está dividido en dos utilidades principales:
+El sistema consta de dos scripts principales para simular un proceso de bloqueo y rescate:
 
-### 1. 🎸 Clone Hero Song Protector (`proteger.py` & `desbloquear.py`)
-Diseñado especialmente para streamers, creadores de contenido o torneos de **Clone Hero** que deseen "bloquear" temporalmente el acceso a ciertas canciones (impidiendo que el juego las cargue al no encontrar los archivos de notas e información).
+### 1. Cifrado de Carpetas Personales (`cifrar_disco.py`)
+* Detecta automáticamente todas las letras de unidades y discos conectados al sistema (`C:\`, `D:\`, etc.).
+* Busca los directorios personales de los usuarios dentro de `\Users\<nombre_usuario>\` como:
+  * `Escritorio` (Desktop)
+  * `Documentos` (Documents)
+  * `Descargas` (Downloads)
+  * `Imágenes` (Pictures)
+  * `Música` (Music)
+  * `Videos` (Videos)
+* Cifra recursivamente todos los archivos válidos contenidos en estas carpetas, añadiendo la extensión `.locked` y eliminando los archivos originales.
+* Guarda un registro local seguro con la contraseña utilizada en un archivo `contrasena_disco.txt` en el directorio de ejecución.
 
-* **`proteger.py` (CLI):** 
-  * Escanea la carpeta actual y sus subcarpetas en busca de archivos `notes.mid` y `song.ini` (estructura típica de canciones de Clone Hero).
-  * Cifra estos archivos usando AES-GCM, renombrándolos a `.locked` y eliminando los originales.
-  * Guarda un registro local de las contraseñas utilizadas en `contrasenas.txt` para mayor seguridad del administrador.
-* **`desbloquear.py` (GUI):**
-  * Aplicación gráfica limpia y moderna creada con **Tkinter**.
-  * Permite al usuario/jugador introducir la contraseña correspondiente para restaurar los archivos `notes.mid` y `song.ini` y poder jugar la canción al instante.
-
-### 2. 🖥 Cifrador y Descifrador de Carpetas de Disco (`cifrar_disco.py` & `desbloquear_disco.py`)
-Una herramienta de simulación educativa/ciberseguridad de tipo "locker".
-* **`cifrar_disco.py`:** 
-  * Escanea automáticamente todas las unidades/discos del sistema.
-  * Localiza las carpetas personales de los usuarios (`Escritorio`, `Documentos`, `Descargas`, `Imágenes`, `Música`, `Videos`).
-  * Cifra recursivamente todos los archivos contenidos con una contraseña global de tu elección.
-* **`desbloquear_disco.py`:**
-  * Escanea todos los discos buscando archivos con la extensión `.locked` y los descifra en masa utilizando la contraseña correcta.
+### 2. Descifrado de Carpetas (`desbloquear_disco.py`)
+* Escanea todos los discos del sistema buscando archivos con la extensión `.locked`.
+* Solicita la contraseña de descifrado al usuario.
+* Si la contraseña es correcta, revierte el cifrado, restaura los archivos originales y elimina los archivos `.locked`.
 
 ---
 
 ## ⚙ Requisitos e Instalación
 
-Para ejecutar los scripts directamente desde el código fuente necesitas **Python 3.10 o superior** y las dependencias de criptografía.
+Para ejecutar los scripts directamente desde el código fuente necesitas tener instalado **Python 3.10 o superior** y la biblioteca `cryptography`.
 
-1. **Instalar dependencias:**
+1. **Instalar dependencias necesarias:**
    ```bash
    pip install cryptography
    ```
 
-2. **Ejecutar el protector de canciones (Clone Hero):**
+2. **Ejecutar el cifrado de disco (en una Máquina Virtual):**
    ```bash
-   python proteger.py
+   python cifrar_disco.py
    ```
 
-3. **Ejecutar el desbloqueador de canciones (interfaz gráfica):**
+3. **Ejecutar el descifrado de disco:**
    ```bash
-   python desbloquear.py
+   python desbloquear_disco.py
    ```
 
 ---
 
 ## 🚀 Compilación a Ejecutable (`.exe`)
 
-Si deseas generar archivos ejecutables independientes para Windows utilizando **PyInstaller**, ejecuta los siguientes comandos:
+Si deseas empaquetar los scripts en archivos ejecutables para Windows usando **PyInstaller**:
 
 ```bash
-# Instalar PyInstaller si no lo tienes
+# Instalar PyInstaller
 pip install pyinstaller
 
-# Compilar el protector de canciones (Consola)
-pyinstaller --onefile proteger.py
-
-# Compilar el desbloqueador de canciones (Sin consola - GUI limpia)
-pyinstaller --onefile --noconsole desbloquear.py
-
-# Compilar cifrador de disco (Consola)
+# Compilar el cifrador de disco a un único archivo ejecutable
 pyinstaller --onefile cifrar_disco.py
 
-# Compilar descifrador de disco (Consola)
+# Compilar el descifrador de disco a un único archivo ejecutable
 pyinstaller --onefile desbloquear_disco.py
 ```
 
-Los archivos `.exe` listos para usar se generarán dentro de la carpeta `dist`.
+Los archivos ejecutables resultantes aparecerán en la carpeta `./dist/`.
 
 ---
 
 ## 🔒 Detalles Técnicos del Cifrado
 
-El esquema de seguridad implementado garantiza que los archivos sean indescifrables sin la contraseña correcta:
-* **Algoritmo de Cifrado:** **AES-GCM (Galois/Counter Mode)** con clave de 256 bits, que proporciona confidencialidad y verificación de integridad (cifrado autenticado).
-* **Derivación de Clave (KDF):** **PBKDF2HMAC** utilizando **SHA-256**, con **600,000 iteraciones** y un *salt* aleatorio único de 16 bytes generado por sesión, lo que mitiga ataques de fuerza bruta y tablas arcoíris.
-* **Metadatos del archivo cifrado:** Cada archivo `.locked` almacena en su cabecera los 16 bytes de `salt` y los 12 bytes del vector de inicialización (`nonce`) necesarios para su posterior descifrado.
+El esquema de seguridad implementado garantiza una fuerte protección de datos:
+* **Algoritmo de Cifrado:** **AES-GCM (Galois/Counter Mode)** con clave de 256 bits (Cifrado Autenticado). Asegura que los archivos no puedan modificarse ni descifrarse sin la clave correcta.
+* **Derivación de Clave (KDF):** **PBKDF2HMAC** utilizando **SHA-256**, aplicando **600,000 iteraciones** y un *salt* criptográfico aleatorio único de 16 bytes. Esto hace que los ataques de diccionario y fuerza bruta sean extremadamente difíciles y lentos.
+* **Estructura del archivo cifrado:** Cada archivo `.locked` generado contiene en su cabecera:
+  * Los primeros 16 bytes de `salt` (para derivar la clave).
+  * Los siguientes 12 bytes de `nonce` (vector de inicialización único).
+  * El resto del archivo corresponde al texto cifrado (`ciphertext`) y al tag de autenticación.
